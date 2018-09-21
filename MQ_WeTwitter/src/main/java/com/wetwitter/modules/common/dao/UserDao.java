@@ -31,5 +31,7 @@ public interface UserDao
 	public int updateFriendApplyStatus(Map<String,Object> paramMap) throws Exception;
 	
 	public int addFriend(Map<String,Object> paramMap) throws Exception;
+	
+	public boolean isFriend(Map<String,Object> paramMap) throws Exception;
 
 }

@@ -130,6 +130,13 @@ public class UserManageService
 			result.setResultMsg("不允许重复发送!");
 			return result;
 		}
+		//校验是否是好友
+		boolean isFriend = userDao.isFriend(paramMap);
+		if(isFriend)
+		{
+			result.setResultMsg("你们已经是好友了,不允许重复申请!");
+			return result;
+		}
 		int i = userDao.addFriendApplication(paramMap);
 		if(i > 0)
 		{

@@ -172,5 +172,18 @@ public class UserDaoImpl extends WeTwitterCommonDao implements UserDao
 		sb.append(" values(:userId,:friendId,:status,SYSDATE())");
 		return super.update(sb.toString(), paramMap);
 	}
+
+	@Override
+	public boolean isFriend(Map<String, Object> paramMap) throws Exception {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" select count(user_id) as friendCount from FRIEND_SHIP ");
+		sb.append(" where user_id = :sender_id or user_id = :receiver_id ");
+		Map<String,Object> retMap = super.queryForMap(sb.toString(), paramMap);
+		if(MapUtils.getInteger(retMap, "friendCount") > 0)
+		{
+			return true;
+		}
+		return false;
+	}
 	
 }

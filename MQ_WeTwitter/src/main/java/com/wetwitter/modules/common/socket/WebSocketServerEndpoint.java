@@ -11,6 +11,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 
@@ -68,18 +69,21 @@ public class WebSocketServerEndpoint
      * @param session
      * @param message
      */
-    public void sendMessage(String receiverUserName, String message) 
+    public void sendMessage(String rouKey, String message)
     {
         try 
         {
-        	boolean isLogin = livingSessions.containsKey(receiverUserName);
+        	String receiverUserName = rouKey.split("\\.")[2];
+        	String senderUserName = rouKey.split("\\.")[1];
         	if(livingSessions.containsKey(receiverUserName))
         	{
         		Session session = livingSessions.get(receiverUserName);
-        		session.getBasicRemote().sendText(message);;
-        		
+        		JSONObject jsonMsg = new JSONObject();
+        		jsonMsg.put("sender_name", senderUserName);
+        		jsonMsg.put("message", message);
+        		session.getBasicRemote().sendText(jsonMsg.toString());
         	}
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -89,7 +93,7 @@ public class WebSocketServerEndpoint
      *
      * @param message
      */
-    public void sendMessageToAll(String message) 
+    public void sendMessageToAll(String message)
     {
 //    	String receiverId = topic.split(".")[2];
         livingSessions.forEach((sessionId, session) -> {

@@ -66,7 +66,7 @@
                                     			</span>
 	                                            <img class="chat-avatar" src="../statics/img/a1.jpg" alt="">
 	                                            <div class="chat-user-name">
-	                                                <a href="#">${ulist.userName}</a>
+	                                                <a href="#" onclick="showChatBox('${ulist.userName}')">${ulist.userName}</a>
                                             	</div>
                                         	</div>
                                     	</c:forEach>
@@ -80,7 +80,7 @@
                                 <div class="chat-message-form">
 
                                     <div class="form-group">
-                                        <textarea class="form-control message-input" name="message" placeholder="输入消息内容，按回车键发送"></textarea>
+                                        <textarea class="form-control message-input" name="message" id="message" placeholder="输入消息内容，按回车键发送"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -189,6 +189,10 @@
 			$(".addFriendremind-box-msg").show();
 			$("#friendName").html(dataName);
 			$("#friendId").html(dataId);
+		};
+		function showChatBox(receicerName){
+			$(".chat-discussion p").text(receicerName);
+			$(".chat-discussion .chat-message").text("");
 		};
 		function sendFriendApply(){
 			var receiverName=$("#friendName").text();
@@ -351,6 +355,47 @@
 				$(".nav").hide(100);
 			}
 		});
+		//按回车发送消息
+		document.getElementById("message").onkeydown=function(e){
+			if(e.keyCode == 13 && e.ctrlKey){
+				document.getElementById("message").value += "\n";
+		    }else if(e.keyCode == 13){
+		        // 避免回车键换行
+		        e.preventDefault();
+		        // 下面写你的发送消息的代码
+		        var message = $("#message").val();
+		        var receiverName = $(".chat-discussion p").text();
+		        //发送mq给接收人
+		        sendMsg(message,receiverName);
+		    }
+			
+		};
+		function sendMsg(message,receiverName){
+			$.ajax({
+	            type : 'post',
+	            url : '${pageContext.request.contextPath}/newsManageService/personalNewsSend.do',
+	            contentType : 'application/json',
+	            data : JSON.stringify({
+	                "receiver_name":receiverName,
+	                "message":message
+	            }),
+	            cache : false,
+	            sync : true,
+	            success : function(data) {
+	                if (200 == data.resultCode) {
+	                	setMyMessageInnerHTML(message);
+	    				$("#message").val("");
+	                } else {
+	                	warmMessage("发送失败,请重新发送");
+	                }
+	            },
+	            error : function() {
+	            	warmMessage("请求失败!");
+	            }
+
+	        });
+		};
+				
 		function warmMessage(msg){
 			var d=$.dialog({
 		         content: '<div style="text-align:center;" class="text-center">'+msg+'</div>',
@@ -393,7 +438,8 @@
 	 
 	    //接收到消息的回调方法，此处添加处理接收消息方法，当前是将接收到的信息显示在网页上
 	    websocket.onmessage = function (event) {
-	        setMessageInnerHTML(event.data);
+	    	var json = jQuery.parseJSON(event.data); 
+	    	setOtherMessageInnerHTML(json);
 	    }
 	 
 	    //连接关闭的回调方法
@@ -414,10 +460,21 @@
 	    	
 	    }
 	 
-	    //将消息显示在网页上，如果不需要显示在网页上，则不调用该方法
-	    function setMessageInnerHTML(innerHTML) {
+	    //将他人发送的消息显示在网页上，如果不需要显示在网页上，则不调用该方法
+	    function setOtherMessageInnerHTML(innerHTML) {
 	    	var tempHTML = "";
-	    	tempHTML += "<div class='chat-message'>";
+	    	tempHTML += "<div class='chat-message-other'>";
+	    	tempHTML += "<img class='message-avatar' src='../statics/img/qq.jpg' alt=''>";
+	    	tempHTML += "<div class='message'><a class='message-author' href='#'>" + innerHTML.sender_name +"</a>";
+	    	tempHTML += "<span class='message-date'>" + new Date().Format("yyyy-MM-dd HH:mm:ss"); + "</span>";
+	    	tempHTML += "<span class='message-content'>" + innerHTML.message + "</span></div></div>";
+	    	$(".chat-discussion").append(tempHTML);
+	    }
+	    
+	  //将自己发送的消息显示在网页上，如果不需要显示在网页上，则不调用该方法
+	    function setMyMessageInnerHTML(innerHTML) {
+	    	var tempHTML = "";
+	    	tempHTML += "<div class='chat-message-my'>";
 	    	tempHTML += "<img class='message-avatar' src='../statics/img/qq.jpg' alt=''>";
 	    	tempHTML += "<div class='message'><a class='message-author' href='#'>" + '<%= session.getAttribute("loginName")%>' +"</a>";
 	    	tempHTML += "<span class='message-date'>" + new Date().Format("yyyy-MM-dd HH:mm:ss"); + "</span>";
