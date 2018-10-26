@@ -439,7 +439,15 @@
 	    //接收到消息的回调方法，此处添加处理接收消息方法，当前是将接收到的信息显示在网页上
 	    websocket.onmessage = function (event) {
 	    	var json = jQuery.parseJSON(event.data); 
-	    	setOtherMessageInnerHTML(json);
+	    	var receiverName = $(".chat-discussion p").text();
+	    	if(receiverName == json.sender_name){
+	    		//如果打开了和发送者的聊天框
+	    		setOtherMessageInnerHTML(json);
+	    	} else{
+	    		//如果没有打开和发送者的聊天框
+	    		showChatBox(json.sender_name);
+	    		setOtherMessageInnerHTML(json);
+	    	}
 	    }
 	 
 	    //连接关闭的回调方法
