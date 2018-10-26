@@ -110,5 +110,24 @@ public class LoginController
         }
 		
 	}
+	
+	
+	 /**
+     * 注销操作，不是销毁session，因此不会触发sessionDestroyed方法，需要我们自己实现移除session操作
+     * @param session
+     * @return
+     */
+	@RequestMapping("/logout")
+	public String logout(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+			throws Exception {
+		// 清除session
+		session.invalidate();
+		// 删除本地账号的Cookie
+//		boolean bool = CookieUtils.clearCookie(request, response, "loginAccount");
+//		boolean bool2 = CookieUtils.clearCookie(request, response, "loginPassword");
+//		boolean bool3 = CookieUtils.clearAllCookie(request, response);
+		// 重定向到登录页面
+		return "/login";
+	}
 
 }
