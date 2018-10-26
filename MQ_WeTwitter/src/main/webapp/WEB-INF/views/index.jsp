@@ -175,6 +175,7 @@
     <script src="../statics/bootstrap/js/bootstrap.js"></script>
     <script src="../statics/js/content.min.js"></script>
     <script src="../statics/dialog/jquery-confirm.min.js"></script>
+    <script src="../statics/layer/layer.js"></script>
     <script>
 	    function showAddFrindBox() {
 	    	$("#addFriend").show();
@@ -397,19 +398,14 @@
 		};
 				
 		function warmMessage(msg){
-			var d=$.dialog({
-		         content: '<div style="text-align:center;" class="text-center">'+msg+'</div>',
-		         top: '10%',
-		         left: '50%',
-		         title: false, // hides the title.
-		         closeIcon: false, // hides the close icon.
-		         columnClass: 'xsmall',
-		         onOpen: function(){
-		             setTimeout(function(){
-		                 d.close();
-		             }, 800);
-		         }
-		   });
+			layer.open({
+				  type: 1,
+				  title:'提示信息',
+				  area: ['300px', '100px'],
+				  shadeClose: true, //点击遮罩关闭
+				  time: 5000,   //5s后自动关闭
+				  content: '<div class="warn-box">'+msg+'</div>',
+				  });
 		}
     </script>
     <script>

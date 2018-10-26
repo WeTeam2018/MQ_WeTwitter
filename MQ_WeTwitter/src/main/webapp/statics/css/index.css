@@ -1,3 +1,11 @@
+.warn-box {
+   text-align:center;
+   margin-top: 5%;
+   color: red;
+   font-size: 15px;
+   font-family: "微软雅黑";
+}
+
 .indexSearchBtn {
 	margin-right: 0px;
 	float: right;
@@ -111,7 +119,7 @@
 }
 .nav ul {
     float:right;
-    display:flex;（可以让父元素内的子元素排成一行）
+    display:flex;/*（可以让父元素内的子元素排成一行）*/
     list-style:none;
 }
 .nav ul li{

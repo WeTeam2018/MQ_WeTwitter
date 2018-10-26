@@ -27,7 +27,7 @@
 <link rel="stylesheet"
 	href="../statics/iCheck/square/blue.css">
 
-
+<link href="../statics/css/index.css" rel="stylesheet">
 <link rel="stylesheet"
 	href="../statics/css/main.css?v=1">
 
@@ -86,6 +86,8 @@
 	<!-- jQuery 2.2.3 -->
 	<script
 		src="../statics/jquery/jquery-2.2.3.min.js"></script>
+	<script
+		src="../statics/layer/layer.js"></script>
 	<!-- Bootstrap 3.3.6 -->
 	<script
 		src="../statics/bootstrap/js/bootstrap.min.js"></script>
@@ -170,19 +172,14 @@
 	    });
 		
 		function warmMessage(msg){
-			var d=$.dialog({
-		         content: '<div style="text-align:center;" class="text-center">'+msg+'</div>',
-		         top: '10%',
-		         left: '50%',
-		         title: false, // hides the title.
-		         closeIcon: false, // hides the close icon.
-		         columnClass: 'xsmall',
-		         onOpen: function(){
-		             setTimeout(function(){
-		                 d.close();
-		             }, 400);
-		         }
-		   });
+			layer.open({
+				  type: 1,
+				  title:'警告信息',
+				  area: ['300px', '100px'],
+				  shadeClose: true, //点击遮罩关闭
+				  time: 5000,   //5s后自动关闭
+				  content: '<div class="warn-box">'+msg+'</div>',
+				  });
 		}
 	</script>
 </body>
