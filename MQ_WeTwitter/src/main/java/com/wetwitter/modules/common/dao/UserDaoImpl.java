@@ -185,5 +185,9 @@ public class UserDaoImpl extends WeTwitterCommonDao implements UserDao
 		}
 		return false;
 	}
-	
+
+	@Override
+	public int saveOffLineMsg(Map<String, Object> paramMap) throws Exception {
+		return 0;
+	}
 }

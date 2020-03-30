@@ -54,3 +54,17 @@ CREATE TABLE IF NOT EXISTS `FRIEND_APPLY_RECORD`(
     PRIMARY KEY ( `id` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+#离线消息记录表
+CREATE TABLE IF NOT EXISTS `OFFLINE_MESSAGE_RECORD`(
+   `id` INT NOT NULL AUTO_INCREMENT,
+   `sender_name` VARCHAR(100) NOT NULL COMMENT '消息发送者姓名,关联用户表的user_name',
+   `receiver_name` VARCHAR(100) NOT NULL COMMENT '消息接受者姓名,关联用户表的user_name',
+   `send_type` INT COMMENT '消息类型,1:文本,2:图片,3:附件',
+   `send_msg` VARCHAR(1000) COMMENT '文本消息',
+   `send_url` VARCHAR(100) COMMENT '附件地址',
+   `CREATE_DATE` DATETIME,
+   `status` INT not null default 0 COMMENT '0:未消费,1:推送成功,2:被拒绝,3:推送失败',
+    PRIMARY KEY ( `id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

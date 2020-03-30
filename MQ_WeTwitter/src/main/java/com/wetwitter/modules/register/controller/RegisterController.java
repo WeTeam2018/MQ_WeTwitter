@@ -26,6 +26,7 @@ public class RegisterController
 	@RequestMapping(value="/toRegister.do")
 	public String toRegister()
 	{
+		System.out.println("====进去注册页面===");
 		return "/register";
 	}
 	

@@ -29,8 +29,14 @@ public class PersonalQueueBusiness implements ChannelAwareMessageListener
     	logger.info("topic:"+message.getMessageProperties().getReceivedRoutingKey());
 //    	String receiverUserName = message.getMessageProperties().getReceivedRoutingKey().split("\\.")[2];
 //    	String senderUserName = message.getMessageProperties().getReceivedRoutingKey().split("\\.")[1];
-    	webSocketServerEndpoin.sendMessage(message.getMessageProperties().getReceivedRoutingKey(), new String(message.getBody()));
-		channel.basicAck(message.getMessageProperties().getDeliveryTag(), false); // false只确认当前一个消息收到，true确认所有consumer获得的消息
+		webSocketServerEndpoin.sendMessage(message.getMessageProperties().getReceivedRoutingKey(), new String(message.getBody()));
+//		if(success){
+			//消费成功，从队列中删除消息
+			channel.basicAck(message.getMessageProperties().getDeliveryTag(), false); // false只确认当前一个消息收到，true确认所有consumer获得的消息
+//		}else {
+//			//对方客户端未上线，消费失败，重新放入队列
+//			channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
+//		}
 	}
 	
 }

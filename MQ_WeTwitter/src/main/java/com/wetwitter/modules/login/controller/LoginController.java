@@ -44,6 +44,7 @@ public class LoginController
 	@RequestMapping(value="/toLogin.do")
 	public String toLogin()
 	{
+		System.out.println("====进去登入页面===");
 		return "/login";
 	}
 	

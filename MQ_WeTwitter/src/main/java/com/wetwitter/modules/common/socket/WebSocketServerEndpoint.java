@@ -1,6 +1,6 @@
 package com.wetwitter.modules.common.socket;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.websocket.OnClose;
@@ -10,8 +10,13 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+
+import com.wetwitter.modules.common.dao.UserDao;
+import com.wetwitter.modules.common.model.User;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -28,7 +33,10 @@ public class WebSocketServerEndpoint
      * 存活的session集合（使用线程安全的map保存）
      */
     private static Map<String, Session> livingSessions = new ConcurrentHashMap<>();
- 
+
+    @Autowired
+    private UserDao userDao;
+
     /**
      * 建立连接的回调方法
      *
@@ -61,17 +69,25 @@ public class WebSocketServerEndpoint
         livingSessions.remove(userId);
         log.info(userId + " 关闭连接");
         subOnlineCount();
+        User user = new User();
+        user.setUserId(userId);
+        user.setUserState(0);
+        try {
+            userDao.modifyUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
  
     /**
      * 单独发送消息
      *
-     * @param session
+     * @param rouKey
      * @param message
      */
     public void sendMessage(String rouKey, String message)
     {
-        try 
+        try
         {
         	String receiverUserName = rouKey.split("\\.")[2];
         	String senderUserName = rouKey.split("\\.")[1];
@@ -82,7 +98,13 @@ public class WebSocketServerEndpoint
         		jsonMsg.put("sender_name", senderUserName);
         		jsonMsg.put("message", message);
         		session.getBasicRemote().sendText(jsonMsg.toString());
-        	}
+        	}else {
+        	    //保存离线消息
+                Map<String,Object> offLineMsg = new HashMap<>();
+                offLineMsg.put("sender_name",senderUserName);
+                offLineMsg.put("receiver_name",receiverUserName);
+                userDao.saveOffLineMsg(offLineMsg);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

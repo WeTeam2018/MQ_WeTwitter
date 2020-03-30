@@ -3,10 +3,11 @@ package com.wetwitter.modules.login.service;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.wetwitter.modules.common.dao.UserDao;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.wetwitter.modules.common.dao.UserDao;
 import com.wetwitter.modules.common.model.Result;
 import com.wetwitter.modules.common.model.User;
 import com.wetwitter.modules.common.utils.MD5Utils;

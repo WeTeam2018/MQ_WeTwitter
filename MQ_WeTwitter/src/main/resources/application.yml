@@ -15,11 +15,16 @@ spring:
   datasource:
     hikari:
       driver-class-name: com.mysql.jdbc.Driver
-      jdbc-url: jdbc:mysql://106.15.177.118:3366/MQ_WeTwitter
-      username: joshua
-      password: "@njl123NJL"
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/sunw
+      #username: joshua
+      #password: "@njl123NJL"
+      username: root
+      password: sw123456
       maximum-pool-size: 10
       minimum-idle: 5
+      validation-query: select 1 from dual
+      test-while-idle: true
+      test-on-borrow: false  #默认是true
   devtools:
     restart:
       enabled: true
